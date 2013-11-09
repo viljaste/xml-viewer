@@ -1,0 +1,22 @@
+name = Disable breadcrumbs
+description = "Disable breadcrumbs on a page/node, content type, or path basis"
+package = "Other"
+core = 7.x
+
+configure = admin/appearance/disable_breadcrumbs
+
+tags[] = appearance
+
+files[]= disable_breadcrumbs.module
+files[]= disable_breadcrumbs.admin.inc
+files[]= disable_breadcrumbs.install
+files[]= disable_breadcrumbs.css
+files[]= disable_breadcrumbs.test
+files[]= disable_breadcrumbs.views.inc
+
+; Information added by drupal.org packaging script on 2013-09-30
+version = "7.x-1.3+9-dev"
+core = "7.x"
+project = "disable_breadcrumbs"
+datestamp = "1380569613"
+

@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @param array $xml_ids
+ * @param array $conditions
+ * @param bool $reset
+ * @return mixed
+ */
+function xml_load_multiple($xml_ids = array(), $conditions = array(), $reset = FALSE) {
+  return entity_load('xml', $xml_ids, $conditions, $reset);
+}
+
+/**
+ * @param $xml_id
+ * @return mixed
+ */
+function xml_load($xml_id) {
+  if ($xmls = xml_load_multiple(array($xml_id))) {
+    return reset($xmls);
+  }
+}
+
+/**
+ * @param $access_token
+ * @return mixed
+ */
+function xml_load_by_access_token($access_token) {
+  $query = new EntityFieldQuery();
+
+  $result = $query
+    ->entityCondition('entity_type', 'xml')
+    ->entityCondition('bundle', 'xml')
+    ->fieldCondition('field_access_token', 'value', $access_token)
+    ->execute();
+
+  if (isset($result['xml']) && $result['xml']) {
+    return xml_load(array_shift($result['xml'])->id);
+  }
+}
+
+/**
+ * @param $xml
+ * @return EntityMetadataWrapper
+ */
+function xml_metadata_wrapper($xml) {
+  return entity_metadata_wrapper('xml', $xml);
+}
+
+/**
+ * @return string
+ */
+function xml_access_token_create() {
+  return drupal_get_token(time());
+}
+
+/**
+ * @param $payload
+ * @return string|void
+ */
+function xml_process_payload($payload) {
+  $dom = new DOMDocument();
+
+  $dom->preserveWhiteSpace = FALSE;
+  $dom->formatOutput = TRUE;
+
+  libxml_use_internal_errors(TRUE);
+
+  return $dom->loadXML($payload) ? $dom->saveXML() : libxml_clear_errors();
+}

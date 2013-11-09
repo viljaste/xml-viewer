@@ -1,0 +1,117 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ *
+ * @return array
+ */
+function xmlviewer_menu() {
+  $items = array();
+
+  $items['xmlviewer'] = array(
+    'title' => 'xmlviewer',
+    'title callback' => 'xmlviewer_form_title_callback',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xmlviewer_form'),
+    'access callback' => TRUE,
+  );
+
+  return $items;
+}
+
+/**
+ * @return string
+ */
+function xmlviewer_form_title_callback() {
+  return '';
+}
+
+/**
+ * @param $form
+ * @param $form_state
+ * @return mixed
+ */
+function xmlviewer_form($form, &$form_state) {
+  $form['url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('URL'),
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('View the XML'),
+    '#attributes' => array(
+      'class' => array(
+        'btn-primary',
+      ),
+    ),
+  );
+
+  return $form;
+}
+
+/**
+ * @param $form
+ * @param $form_state
+ */
+function xmlviewer_form_validate($form, &$form_state) {
+  $values = &$form_state['values'];
+
+  if (!valid_url($values['url'], TRUE)) {
+    form_set_error('url', t('The URL you specified is not valid.'));
+  }
+  else {
+    $response = drupal_http_request($values['url']);
+
+    if (in_array($response->code, array(200, 304))) {
+      if ($payload = xml_process_payload($response->data)) {
+        $values['payload'] = $payload;
+      }
+      else {
+        form_set_error('url', t('The processing of the XML failed.'));
+      }
+    }
+    else {
+      form_set_error('url', t('Unable to find the resource.'));
+    }
+  }
+}
+
+/**
+ * @param $form
+ * @param $form_state
+ */
+function xmlviewer_form_submit($form, &$form_state) {
+  $values = $form_state['values'];
+
+  $xml = entity_create('xml', array(
+    'type' => 'xml',
+  ));
+
+  $xml_metadata_wrapper = xml_metadata_wrapper($xml);
+
+  $xml_metadata_wrapper->field_url->set($values['url']);
+  $xml_metadata_wrapper->field_payload->set($values['payload']);
+
+  $access_token = xml_access_token_create();
+
+  $xml_metadata_wrapper->field_access_token->set($access_token);
+
+  $xml_metadata_wrapper->save();
+
+  $form_state['redirect'] = 'xml/' . $access_token;
+}
+
+/**
+ * Implements hook_preprocess_views_view().
+ *
+ * @param $variables
+ */
+function xmlviewer_preprocess_views_view(&$variables) {
+  if ($variables['view']->name === 'xml' && $variables['view']->current_display === 'full_content' && ($xml = xml_load_by_access_token($variables['view']->args[0]))) {
+    $url = xml_metadata_wrapper($xml)->field_url->value();
+
+    $variables['view']->build_info['title'] = l($url, $url);
+  }
+}

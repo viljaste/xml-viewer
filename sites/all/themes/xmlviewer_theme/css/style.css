@@ -2,3 +2,15 @@
  * This file should get overwritten if Method 1 is used. If Method 2 is chosen,
  * remove this comment and start adding your styles to this file.
  */
+
+#page {
+  position: relative;
+}
+
+#forkme {
+  position: absolute;
+  top: 41px;
+  right: 0;
+  border: 0;
+  z-index: 1100;
+}

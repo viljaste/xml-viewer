@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the xmlviewer features feature.
+ */
+
+include_once 'xmlviewer_features.features.inc';

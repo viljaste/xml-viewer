@@ -1,0 +1,5 @@
+name = Entity: XML
+package = xmlviewer
+core = 7.x
+
+dependencies[] = entity

@@ -1,0 +1,6 @@
+name = xmlviewer
+package = xmlviewer
+core = 7.x
+
+dependencies[] = entity
+dependencies[] = xml
