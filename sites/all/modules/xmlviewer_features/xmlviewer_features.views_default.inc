@@ -62,7 +62,7 @@ function xmlviewer_features_views_default_views() {
   $handler->display->display_options['path'] = 'xml/%';
 
   /* Display: XML list */
-  $handler = $view->new_display('page', 'XML list', 'page_1');
+  $handler = $view->new_display('page', 'XML list', 'xm_list');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'XML list';
   $handler->display->display_options['defaults']['access'] = FALSE;
@@ -76,6 +76,40 @@ function xmlviewer_features_views_default_views() {
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['pager']['options']['quantity'] = '9';
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'field_access_token' => 'field_access_token',
+    'field_url' => 'field_url',
+    'created' => 'created',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'field_access_token' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_url' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'created' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: XML: Access token */
   $handler->display->display_options['fields']['field_access_token']['id'] = 'field_access_token';
@@ -90,6 +124,13 @@ function xmlviewer_features_views_default_views() {
   $handler->display->display_options['fields']['field_url']['alter']['make_link'] = TRUE;
   $handler->display->display_options['fields']['field_url']['alter']['path'] = 'xml/[field_access_token] ';
   $handler->display->display_options['fields']['field_url']['element_label_colon'] = FALSE;
+  /* Field: XML: Created */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'eck_xml';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['label'] = '';
+  $handler->display->display_options['fields']['created']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['created']['date_format'] = 'long';
   $handler->display->display_options['defaults']['sorts'] = FALSE;
   /* Sort criterion: XML: Created */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
