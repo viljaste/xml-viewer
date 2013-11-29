@@ -1,2 +1,2 @@
-xmlviewer
+xml-viewer
 ===========
